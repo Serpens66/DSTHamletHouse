@@ -20,14 +20,14 @@ function Contador:OnSave()
     return
     {
         count = self.count,
---        next_interior_ID = self.next_interior_ID
+       next_interior_ID = self.next_interior_ID
     }
 end
 
 function Contador:OnLoad(data)
     if data then
         self.count = data.count or self.count
---        self.next_interior_ID = data.next_interior_ID or self.next_interior_ID
+       self.next_interior_ID = data.next_interior_ID or self.next_interior_ID
     end
 end
 
@@ -79,259 +79,259 @@ function Contador:GetDirOpposite()
 end
 
 function Contador:GetX()
-local x = 0
-local y = 0
-local z = 0
+    local x = 0
+    local y = 0
+    local z = 0
 
-if self.count > 0 and self.count < 11 then
-x = 1500 + self.count * 50
-y = 0
-z = 1500 + 50
-end
+    if self.count > 0 and self.count < 11 then
+    x = 1500 + self.count * 50
+    y = 0
+    z = 1500 + 50
+    end
 
-if self.count > 10 and self.count < 21  then
-x = 1500 + self.count * 50 - 500
-y = 0
-z = 1500 + 100
-end
+    if self.count > 10 and self.count < 21  then
+    x = 1500 + self.count * 50 - 500
+    y = 0
+    z = 1500 + 100
+    end
 
-if self.count > 20 and self.count < 31  then
-x = 1500 + self.count * 50 - 1000
-y = 0
-z = 1500 + 150
-end
+    if self.count > 20 and self.count < 31  then
+    x = 1500 + self.count * 50 - 1000
+    y = 0
+    z = 1500 + 150
+    end
 
-if self.count > 30 and self.count < 41  then
-x = 1500 + self.count * 50 - 1500
-y = 0
-z = 1500 + 200
-end
+    if self.count > 30 and self.count < 41  then
+    x = 1500 + self.count * 50 - 1500
+    y = 0
+    z = 1500 + 200
+    end
 
-if self.count > 40 and self.count < 51  then
-x = 1500 + self.count * 50 - 2000
-y = 0
-z = 1500 + 250
-end
+    if self.count > 40 and self.count < 51  then
+    x = 1500 + self.count * 50 - 2000
+    y = 0
+    z = 1500 + 250
+    end
 
-if self.count > 50 and self.count < 61  then
-x = 1500 + self.count * 50 - 2500
-y = 0
-z = 1500 + 300
-end
+    if self.count > 50 and self.count < 61  then
+    x = 1500 + self.count * 50 - 2500
+    y = 0
+    z = 1500 + 300
+    end
 
-if self.count > 60 and self.count < 71  then
-x = 1500 + self.count * 50 - 3000
-y = 0
-z = 1500 + 350
-end
+    if self.count > 60 and self.count < 71  then
+    x = 1500 + self.count * 50 - 3000
+    y = 0
+    z = 1500 + 350
+    end
 
-if self.count > 70 and self.count < 81  then
-x = 1500 + self.count * 50 - 3500
-y = 0
-z = 1500 + 400
-end
+    if self.count > 70 and self.count < 81  then
+    x = 1500 + self.count * 50 - 3500
+    y = 0
+    z = 1500 + 400
+    end
 
-if self.count > 80 and self.count < 91  then
-x = 1500 + self.count * 50 - 4000
-y = 0
-z = 1500 + 450
-end
+    if self.count > 80 and self.count < 91  then
+    x = 1500 + self.count * 50 - 4000
+    y = 0
+    z = 1500 + 450
+    end
 
-if self.count > 90 and self.count < 101  then
-x = 1500 + self.count * 50 - 4500
-y = 0
-z = 1500 + 500
-end
+    if self.count > 90 and self.count < 101  then
+    x = 1500 + self.count * 50 - 4500
+    y = 0
+    z = 1500 + 500
+    end
 
-if self.count > 100 and self.count < 111 then
-x = 1500 + self.count * 50 - 5000
-y = 0
-z = -1500 - 50
-end
+    if self.count > 100 and self.count < 111 then
+    x = 1500 + self.count * 50 - 5000
+    y = 0
+    z = -1500 - 50
+    end
 
-if self.count > 110 and self.count < 121  then
-x = 1500 + self.count * 50 - 5500
-y = 0
-z = -1500 - 100
-end
+    if self.count > 110 and self.count < 121  then
+    x = 1500 + self.count * 50 - 5500
+    y = 0
+    z = -1500 - 100
+    end
 
-if self.count > 120 and self.count < 131  then
-x = 1500 + self.count * 50 - 6000
-y = 0
-z = -1500 - 150
-end
+    if self.count > 120 and self.count < 131  then
+    x = 1500 + self.count * 50 - 6000
+    y = 0
+    z = -1500 - 150
+    end
 
-if self.count > 130 and self.count < 141  then
-x = 1500 + self.count * 50 - 6500
-y = 0
-z = -1500 - 200
-end
+    if self.count > 130 and self.count < 141  then
+    x = 1500 + self.count * 50 - 6500
+    y = 0
+    z = -1500 - 200
+    end
 
-if self.count > 140 and self.count < 151  then
-x = 1500 + self.count * 50 - 7000
-y = 0
-z = -1500 - 250
-end
+    if self.count > 140 and self.count < 151  then
+    x = 1500 + self.count * 50 - 7000
+    y = 0
+    z = -1500 - 250
+    end
 
-if self.count > 150 and self.count < 161  then
-x = 1500 + self.count * 50 - 7500
-y = 0
-z = -1500 - 300
-end
+    if self.count > 150 and self.count < 161  then
+    x = 1500 + self.count * 50 - 7500
+    y = 0
+    z = -1500 - 300
+    end
 
-if self.count > 160 and self.count < 171  then
-x = 1500 + self.count * 50 - 8000
-y = 0
-z = -1500 - 350
-end
+    if self.count > 160 and self.count < 171  then
+    x = 1500 + self.count * 50 - 8000
+    y = 0
+    z = -1500 - 350
+    end
 
-if self.count > 170 and self.count < 181  then
-x = 1500 + self.count * 50 - 8500
-y = 0
-z = -1500 - 400
-end
+    if self.count > 170 and self.count < 181  then
+    x = 1500 + self.count * 50 - 8500
+    y = 0
+    z = -1500 - 400
+    end
 
-if self.count > 180 and self.count < 191  then
-x = 1500 + self.count * 50 - 9000
-y = 0
-z = -1500 - 450
-end
+    if self.count > 180 and self.count < 191  then
+    x = 1500 + self.count * 50 - 9000
+    y = 0
+    z = -1500 - 450
+    end
 
-if self.count > 190 and self.count < 201  then
-x = 1500 + self.count * 50 - 9500
-y = 0
-z = -1500 - 500
-end	
+    if self.count > 190 and self.count < 201  then
+    x = 1500 + self.count * 50 - 9500
+    y = 0
+    z = -1500 - 500
+    end	
 
-return x
+    return x
 end
 
 function Contador:GetZ()
-local x = 0
-local y = 0
-local z = 0
+    local x = 0
+    local y = 0
+    local z = 0
 
-if self.count > 0 and self.count < 11 then
-x = 1500 + self.count * 50
-y = 0
-z = 1500 + 50
-end
+    if self.count > 0 and self.count < 11 then
+    x = 1500 + self.count * 50
+    y = 0
+    z = 1500 + 50
+    end
 
-if self.count > 10 and self.count < 21  then
-x = 1500 + self.count * 50 - 500
-y = 0
-z = 1500 + 100
-end
+    if self.count > 10 and self.count < 21  then
+    x = 1500 + self.count * 50 - 500
+    y = 0
+    z = 1500 + 100
+    end
 
-if self.count > 20 and self.count < 31  then
-x = 1500 + self.count * 50 - 1000
-y = 0
-z = 1500 + 150
-end
+    if self.count > 20 and self.count < 31  then
+    x = 1500 + self.count * 50 - 1000
+    y = 0
+    z = 1500 + 150
+    end
 
-if self.count > 30 and self.count < 41  then
-x = 1500 + self.count * 50 - 1500
-y = 0
-z = 1500 + 200
-end
+    if self.count > 30 and self.count < 41  then
+    x = 1500 + self.count * 50 - 1500
+    y = 0
+    z = 1500 + 200
+    end
 
-if self.count > 40 and self.count < 51  then
-x = 1500 + self.count * 50 - 2000
-y = 0
-z = 1500 + 250
-end
+    if self.count > 40 and self.count < 51  then
+    x = 1500 + self.count * 50 - 2000
+    y = 0
+    z = 1500 + 250
+    end
 
-if self.count > 50 and self.count < 61  then
-x = 1500 + self.count * 50 - 2500
-y = 0
-z = 1500 + 300
-end
+    if self.count > 50 and self.count < 61  then
+    x = 1500 + self.count * 50 - 2500
+    y = 0
+    z = 1500 + 300
+    end
 
-if self.count > 60 and self.count < 71  then
-x = 1500 + self.count * 50 - 3000
-y = 0
-z = 1500 + 350
-end
+    if self.count > 60 and self.count < 71  then
+    x = 1500 + self.count * 50 - 3000
+    y = 0
+    z = 1500 + 350
+    end
 
-if self.count > 70 and self.count < 81  then
-x = 1500 + self.count * 50 - 3500
-y = 0
-z = 1500 + 400
-end
+    if self.count > 70 and self.count < 81  then
+    x = 1500 + self.count * 50 - 3500
+    y = 0
+    z = 1500 + 400
+    end
 
-if self.count > 80 and self.count < 91  then
-x = 1500 + self.count * 50 - 4000
-y = 0
-z = 1500 + 450
-end
+    if self.count > 80 and self.count < 91  then
+    x = 1500 + self.count * 50 - 4000
+    y = 0
+    z = 1500 + 450
+    end
 
-if self.count > 90 and self.count < 101  then
-x = 1500 + self.count * 50 - 4500
-y = 0
-z = 1500 + 500
-end	
+    if self.count > 90 and self.count < 101  then
+    x = 1500 + self.count * 50 - 4500
+    y = 0
+    z = 1500 + 500
+    end	
 
-if self.count > 100 and self.count < 111 then
-x = 1500 + self.count * 50 - 5000
-y = 0
-z = -1500 - 50
-end
+    if self.count > 100 and self.count < 111 then
+    x = 1500 + self.count * 50 - 5000
+    y = 0
+    z = -1500 - 50
+    end
 
-if self.count > 110 and self.count < 121  then
-x = 1500 + self.count * 50 - 5500
-y = 0
-z = -1500 - 100
-end
+    if self.count > 110 and self.count < 121  then
+    x = 1500 + self.count * 50 - 5500
+    y = 0
+    z = -1500 - 100
+    end
 
-if self.count > 120 and self.count < 131  then
-x = 1500 + self.count * 50 - 6000
-y = 0
-z = -1500 - 150
-end
+    if self.count > 120 and self.count < 131  then
+    x = 1500 + self.count * 50 - 6000
+    y = 0
+    z = -1500 - 150
+    end
 
-if self.count > 130 and self.count < 141  then
-x = 1500 + self.count * 50 - 6500
-y = 0
-z = -1500 - 200
-end
+    if self.count > 130 and self.count < 141  then
+    x = 1500 + self.count * 50 - 6500
+    y = 0
+    z = -1500 - 200
+    end
 
-if self.count > 140 and self.count < 151  then
-x = 1500 + self.count * 50 - 7000
-y = 0
-z = -1500 - 250
-end
+    if self.count > 140 and self.count < 151  then
+    x = 1500 + self.count * 50 - 7000
+    y = 0
+    z = -1500 - 250
+    end
 
-if self.count > 150 and self.count < 161  then
-x = 1500 + self.count * 50 - 7500
-y = 0
-z = -1500 - 300
-end
+    if self.count > 150 and self.count < 161  then
+    x = 1500 + self.count * 50 - 7500
+    y = 0
+    z = -1500 - 300
+    end
 
-if self.count > 160 and self.count < 171  then
-x = 1500 + self.count * 50 - 8000
-y = 0
-z = -1500 - 350
-end
+    if self.count > 160 and self.count < 171  then
+    x = 1500 + self.count * 50 - 8000
+    y = 0
+    z = -1500 - 350
+    end
 
-if self.count > 170 and self.count < 181  then
-x = 1500 + self.count * 50 - 8500
-y = 0
-z = -1500 - 400
-end
+    if self.count > 170 and self.count < 181  then
+    x = 1500 + self.count * 50 - 8500
+    y = 0
+    z = -1500 - 400
+    end
 
-if self.count > 180 and self.count < 191  then
-x = 1500 + self.count * 50 - 9000
-y = 0
-z = -1500 - 450
-end
+    if self.count > 180 and self.count < 191  then
+    x = 1500 + self.count * 50 - 9000
+    y = 0
+    z = -1500 - 450
+    end
 
-if self.count > 190 and self.count < 201  then
-x = 1500 + self.count * 50 - 9500
-y = 0
-z = -1500 - 500
-end	
+    if self.count > 190 and self.count < 201  then
+    x = 1500 + self.count * 50 - 9500
+    y = 0
+    z = -1500 - 500
+    end	
 
-return z
+    return z
 end
 
 
