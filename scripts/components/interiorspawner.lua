@@ -5,74 +5,49 @@ local function GetVerb(inst, doer)
     return STRINGS.ACTIONS.JUMPIN.ENTER
 end
 
+-- DISCLAIMER
+-- This new interiorspawner is already good working, but the code to support doors to new rooms and stuff like this is not finished yet.
+-- And there might be more that is not working properly yet.
 
 
--- möglicherweise ist interior_spawn_storage_origin veraltet und alles was damit zusammenhängt kann weg?
--- das hieße auch dass create und configwalls veraltet ist? wo/wie werden walls stattdessen gemacht?
--- load und loadpostpass kann vermutlich auch weg, 1) scheint es mit interior_spawn_storage_origin verwoben zu sein und 2) brauchen wir es in DST
--- vermutlich nicht, da alle räume ruhig dauerhaft mitgeladen werden können (solange wir keine fetten Höhlen oderso damit bauen, sollte es keine große auswirkung auf ladezeit oderso haben)
+-- in DS:
+-- in DS, only one room is loaded at a time and of course the code is heavily focused on singleplayer.
+-- a room (interior) can either be 
+-- 1) never loaded yet (in this case we only have list of prefabs)
+-- 2) loaded and currently active (because the player entered the room). then we will also have an object_list and all entities are really there and active (not sleeping)
+-- 3) visited. In this case a player was here, but left the room already. The room will unload and put all objects to a storage location. the objects are still in objects_list, but all entities are disabled/sleeping.
+-- so every room will be placed at the same interior_spawn_origin-position, while all visited rooms were put at interior_spawn_storage_origin or never loaded.
+
+-- In DST we already have a good sleep/disabling entities system, so I see no need to still use that storage system.DocumentsDirectory
+-- instead we will spawn new rooms at different lcoations (GetNewInteriorPos) and wont unload them ever.
 
 -- I removed all support for dungeons:
 -- 1) because I dont have time to also understand this code
 -- 2) There is a load storage system in hamlet and I will remove it for DST houses. House-interiros are small and therefore no problem if loaded regulary. But dungeons could be big and it might be better to use the storage system from hamlet for this.
 
--- current_interior anpassen an DST hängt davon ab was gemacht werden soll.
--- wenns datum geht zb die kamera oder anderen client stuff zu machen, dann muss es halt nach spieler sortiert sein
--- wenns aber darum geht etwas zu spawnen, also serverstuff, dann es entwerder immer true setzen oder durch alle spieler durchloopen.
--- -> auch in allen dateien entsprechend ersetzen (zb house_door)
+-- to prevent lightnig witihn interior, I added invis_lightningrod objects around each interior. This is a better solution to removing all lightning at all within rooms.
 
--- alles mit object_list entfernen?
--- wenns eine liste mit allen instances im interior ist, dann wäre es schon sinvoll sie weiterhin zu verwenden.
--- auch besonders hilfreich, wenn raum entfernbar sein soll.
--- object_list wird allerdings etwas anders in DS verwendet, in erster linie für räume im storage.
--- daher werden wir es umbennennen, damit keine verwirrung entsteht: inst_list
+-- How to make DS code compatible to my new interirospawner:
+-- 1) current_interior is no longer saved within interirospawner, since we have mutliple players, so there is no single interior that is currently loaded, all are loaded at once.
+--    instead you should use the GetInteriorByPosition(pos) function, if you want to know the interior something is located.
+-- 2) .visited can most often be replaced by true, cause we dont unload interiors, so every exiting interior is visited. But it really depens on the code that follows. There is no object_list anymore!
+-- 3) object_list and all the removeprefab/injectprefab/AddPrefabToInterior and stuff like this was removed, because we dont load/unload interiors anymore.
+-- ..?
 
--- SpawnInterior wird aufgerufen, wenn ein raum erstmalig oder nach dem laden erstmalig betreten wird.
--- da wir aber wollen, dass beim laden immer alles geladen wird (dies wird bereits durch DST selbst gemacht)
--- wir müssen also eig nur nach createroom dann SpawnInterior aufrufen?
--- visited kann quasi immer auf true gesetzt werden (was durch aufrufen von SpawnInterior erreicht wird)
+-- TODO:
+-- add build/demolish room in modmain and check if exiting functions here work fine or if we need to add/adjust.
+-- we may need a replacement for object_list, just to know what entities are within a room (eg. when demolishing it), we should name it differently eg inst_list
+-- replace ThePlayer with the correct player entity
+-- use other server code instead of TheCamera and TheFrontEnd, maybe player.ScreenFade from player_common.lua
+-- and maybe many more...
 
--- interior handle scheint mit den floor und wall textures zu tun zu haben.
--- erstmal auskommentieren und zur not gibts die dann halt ersmal nicht und mpssen wie bei TE mod zugefügt werden
-
--- gucken ob wir ein GetInteriorByPosition schreiben können.
--- also jede position innerhalb eines interiors nehmen können und dem interior zuordnen.
--- dies würde auch das ungenaue mapimpassable problem lösen
--- vermutlich muss man dazu die positionen und lenght der wände abspeichern und dann prüfen ob position in diesem bereich.
--- dazu aber erstmal alles zum laufen bekommen und gucken ob createwalls hier überhautp genutzt wird, oder wer diese spawned.
-
--- genauso from_inst und to_inst usw...
--- self.walls geht auch nur für ein interior gleichzeitig.
-
--- die fkt getspawnorigin evtl weiter verwenden, aber interior muss übergeben werden und dann wird einfach seine center_pos returned?
--- getspawnstorage gibts hingegen nicht mehr
-
-
--- aktuell spawnen noch alle interiors an derslben stelle (was von DS auch so vorgesehen ist, da die räume beim verlassen entfernt/in storage verschoben werden)
-
-
--- die bestimmung der neuen position und vorhersage der darauffolgenden alles in derselben funktion machen,
--- damit auch Aufrufe innerhalb kürzester zeit funktionieren
-
-
--- ConsiderPlayerInside speichern oder beim laden aufrufen
-
-
-
--- from_inst ist die door, und wird nur gebraucht, um damit die target_door zu bekommen.
-
--- to_target wird nun in playtransition und fadeout gebraucht, macht also keinen sinn, dass es self ist, kann in local umgewandetl werden
-
-
--- alles wird vermutlich nur für server aufgerufen, dh ThePlayer=player wird nicht funktionieren
--- daher gucken dass ich server alternative aus player_common verwesen kann, wie player.ScreenFade
-
-TUNING.HH_INTERIOR_START_POS = Vector3(-1500,0,-1500) -- has to be a corner, so do not set x or z 0  (for the calcualation of the next interior position)
+TUNING.HH_INTERIOR_START_POS = Vector3(-1500,0,-1500) -- has to be a corner, so do not set x or z 0  (for the calcualation of the next interior position) ATTANTION: if you change this from -,0,- to sth else, you might need to adjust the function GetNewInteriorPos
 local space_between_interiors = 30
-TUNING.HH_BIGGESTROOMSIZE = 250 -- needs to be adjusted if a room is bigger than this, but this is not advised anyway.
 
 local InteriorSpawner = Class(function(self, inst)
     self.inst = inst
+    
+    self.BIGGESTROOMSIZE = 10 -- just to speed up the function GetInteriorByPos, is adjusted automatically when adding a new room
     
     self.interiors = {}
 
@@ -97,8 +72,6 @@ local InteriorSpawner = Class(function(self, inst)
     self.player_homes = {}
     
 end)
-
-local NO_INTERIOR = -1
 
 function InteriorSpawner:GetNewInteriorPos(interior)
     local xnew, znew = TUNING.HH_INTERIOR_START_POS.x,TUNING.HH_INTERIOR_START_POS.z
@@ -156,7 +129,7 @@ function InteriorSpawner:GetNewInteriorPos(interior)
 end
 
 function InteriorSpawner:GetInteriorByPos(pos)
-    if pos~=nil and math.abs(pos.x)>math.abs(TUNING.HH_INTERIOR_START_POS.x)-TUNING.HH_BIGGESTROOMSIZE/2 or math.abs(pos.z)>math.abs(TUNING.HH_INTERIOR_START_POS.z)-TUNING.HH_BIGGESTROOMSIZE/2 then
+    if pos~=nil and math.abs(pos.x)>math.abs(TUNING.HH_INTERIOR_START_POS.x)-self.BIGGESTROOMSIZE/2 or math.abs(pos.z)>math.abs(TUNING.HH_INTERIOR_START_POS.z)-self.BIGGESTROOMSIZE/2 then
         for _,interior in ipairs(self.interiors) do
             if pos.x > interior.xmin and pos.x < interior.xmax and pos.z > interior.zmin and pos.z < interior.zmax then
                 return interior
@@ -211,7 +184,7 @@ function InteriorSpawner:SetUpPathFindingBarriers(x,y,z,width, depth)
         end
     end
     for i,pt in pairs(self.pathfindingBarriers) do
-        ground.Pathfinder:AddWall(pt.x, pt.y, pt.z) -- does not do anything.. but will leave it, just in case
+        ground.Pathfinder:AddWall(pt.x, pt.y, pt.z) -- for mobs pathfinding only
         local r = SpawnPrefab("wallblockobject") -- an invisble blocker object. Unfortunately in DST there is no Physics:SetRectangle (to be used on the wall prefab), so collision with everything is a circle. So there is no other way to block, then placing dozens of small instances...
         if r~=nil then
             r.Transform:SetPosition(pt.x, pt.y, pt.z)
@@ -417,20 +390,6 @@ function InteriorSpawner:SetCameraOffset(cameraoffset, zoom)
     print("InteriorSpawner: DELETED, do not call this! trying to SetCameraOffset",cameraoffset, zoom)
 end
 
-local function GetTileType(pt)
-    local ground = TheWorld
-    local tile
-    if ground and ground.Map then
-        tile = ground.Map:GetTileAtPoint(pt:Get())
-    end
-    local groundstring = "unknown"
-    for i,v in pairs(GROUND) do
-        if tile == v then
-            groundstring = i
-        end
-    end
-    return groundstring
-end
 
 function InteriorSpawner:GetDoor(door_id)
     return self.doors[door_id]
@@ -438,7 +397,7 @@ end
 
 function InteriorSpawner:ApplyInteriorCamera(destination)
     -- hier dann den cameratweak Kram machen? alternativ in modmain in HH_House
-    print("InteriorSpawner: DELETED, do not call this! trying to ApplyInteriorCamera",destination)
+    -- print("InteriorSpawner: DELETED, do not call this! trying to ApplyInteriorCamera",destination)
 end
 
 function InteriorSpawner:ApplyInteriorCameraWithPosition(destination, pt)
@@ -676,7 +635,15 @@ function InteriorSpawner:CreateRoom(interior, width, height, depth, dungeon_name
     end        
 
     assert(roomindex)
-
+    
+    if width > self.BIGGESTROOMSIZE then
+        self.BIGGESTROOMSIZE = width
+    end
+    if depth > self.BIGGESTROOMSIZE then
+        self.BIGGESTROOMSIZE = depth
+    end
+    
+    
     -- SET A DEFAULT CC FOR INTERIORS
     if not cc then
         cc = "images/colour_cubes/day05_cc.tex"
@@ -1085,16 +1052,16 @@ end
 function InteriorSpawner:GetDoorInst(door_id)
     local door_data = self.doors[door_id]
     if door_data then
-        if door_data.my_interior_name then
-            local interior = self.interiors[door_data.my_interior_name]
-            for k, v in ipairs(interior.object_list) do
-                if v.components.door and v.components.door.door_id == door_id then
-                    return v
-                end
-            end
-        else
+        -- if door_data.my_interior_name then
+            -- local interior = self.interiors[door_data.my_interior_name]
+            -- for k, v in ipairs(interior.object_list) do
+                -- if v.components.door and v.components.door.door_id == door_id then
+                    -- return v
+                -- end
+            -- end
+        -- else
             return door_data.inst
-        end
+        -- end
     end
     return nil
 end
@@ -1179,10 +1146,15 @@ function InteriorSpawner:GetPlayerRoomIndex(house_id, interior_id)
     end
 end
 
-function InteriorSpawner:GetCurrentPlayerRoomConnectedToExit(interiorname, exclude_dir, exclude_room_id)
+function InteriorSpawner:GetCurrentPlayerRoomConnectedToExit(interiorname, exclude_dir, exclude_room_id,inst)
     local interior = self.interiors[interiorname] -- replaces self.current_interior in this case
+    if interior==nil and inst~=nil then
+        interior = self:GetInteriorByPos(inst:GetPosition())
+    end
     if interior then
         return self:PlayerRoomConnectedToExit(interior.dungeon_name, interior.unique_name, exclude_dir, exclude_room_id)
+    else
+        print("InteriorSpawner: ATTENTION, no interior found with GetCurrentPlayerRoomConnectedToExit. Make sure the first param is now interiorname!")
     end
 end
 
@@ -1324,8 +1296,12 @@ function InteriorSpawner:RemovePlayerRoom(house_id, id)
     end
 end
 
-function InteriorSpawner:GetCurrentPlayerRoomIndex()
-    print("InteriorSpawner: DELETED, do not call this! trying to GetCurrentPlayerRoomIndex")
+function InteriorSpawner:GetCurrentPlayerRoomIndex(current_interior)
+	if current_interior then
+		return self:GetPlayerRoomIndex( current_interior.dungeon_name , current_interior.unique_name )
+	else
+        print("InteriorSpawner: ATTENTION, no interior found with GetCurrentPlayerRoomIndex. Make sure the first param is now current_interior!")
+    end
 end
 
 function InteriorSpawner:getPropInterior(inst)
@@ -1360,6 +1336,7 @@ function InteriorSpawner:OnSave()
         -- current_interior = self.current_interior and self.current_interior.unique_name or nil,
         player_homes = self.player_homes,
         last_interior_posinfo = self.last_interior_posinfo,
+        considered_inside_interior = self.considered_inside_interior,
     }   
 
     local refs = {}
@@ -1500,11 +1477,6 @@ function InteriorSpawner:OnLoad(data)
 
     -- TheWorld.components.colourcubemanager:SetInteriorColourCube(nil)
 
-    -- if data.current_interior then
-        -- self.current_interior = self:GetInteriorByName(data.current_interior)
-        -- self:ConsiderPlayerInside(self.current_interior.unique_name)
-        -- TheWorld.components.colourcubemanager:SetInteriorColourCube( self.current_interior.cc )     
-    -- end
 
     if data.prev_player_pos then
         self.prev_player_pos_x, self.prev_player_pos_y, self.prev_player_pos_z = data.prev_player_pos.x, data.prev_player_pos.y, data.prev_player_pos.z
@@ -1518,6 +1490,10 @@ function InteriorSpawner:OnLoad(data)
     if data.last_interior_posinfo then
         self.last_interior_posinfo = data.last_interior_posinfo
     end
+    if data.considered_inside_interior then
+        self.considered_inside_interior = data.considered_inside_interior
+    end
+    
 end
 
 
@@ -1622,7 +1598,6 @@ function InteriorSpawner:GetCurrentInteriors(player)
     print("InteriorSpawner: DELETED, do not call this! trying to GetCurrentInteriors",player)
 end
 
-
 function InteriorSpawner:IsPlayerConsideredInside(interior,player) -- added player to support multiple players
     -- if we're transitioning into, inside, or transitioning out of this will return true
     if interior~=nil then
@@ -1674,19 +1649,14 @@ end
 
 function InteriorSpawner:getOriginForInteriorInst(inst)
     -- it's either in interior storage or in interior spawn, return the right origin to work relative to
-    print("WARNING: InteriorSpawner:getOriginForInteriorInst",inst)
-    local spawnStorage = self:getSpawnStorage()
-    local spawnOrigin = self:getSpawnOrigin()
-    
     local pos = inst:GetPosition()
-    local storageDist = (pos - spawnStorage):Length()
+    local current_interior = self:GetInteriorByPos(pos)
+    local spawnOrigin = self:getSpawnOrigin(current_interior)
     local spawnDist = (pos - spawnOrigin):Length()
-    local origin = (storageDist < spawnDist) and spawnStorage or spawnOrigin
-    return origin, pos
+    return spawnOrigin, pos
 end
 
 function InteriorSpawner:GetExitDirection(inst)
-    print("WARNING: InteriorSpawner:GetExitDirection",inst)
     local origin = self:getOriginForInteriorInst(inst)
     local position = inst:GetPosition()
     local delta = position - origin
@@ -1709,7 +1679,8 @@ function InteriorSpawner:GetExitDirection(inst)
 end
 
 function InteriorSpawner:GetPrevPlayerPos()
-    return self.prev_player_pos_x, self.prev_player_pos_y, self.prev_player_pos_z
+    print("InteriorSpawner: DELETED, do not call this! trying to GetPrevPlayerPos") -- we dont need it
+    -- return self.prev_player_pos_x, self.prev_player_pos_y, self.prev_player_pos_z
 end
 
 function InteriorSpawner:SetupInteriorEntries()

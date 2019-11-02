@@ -280,9 +280,6 @@ local function creatInterior(inst, name)
             ID = interior_spawner:GetNewID()
         end
 
-        -- ID = "p" .. ID 
-        -- inst.interiorID = ID
-
         local exterior_door_def = {
             my_door_id = name..ID.."_door",
             target_door_id = name..ID.."_exit",
@@ -320,7 +317,7 @@ local function creatInterior(inst, name)
 
                 { name = "window_round_curtains_nails", x_offset = 0, z_offset = 15/2, rotation = 90, addtags={"playercrafted"} },
                 
-                { name = "housefloor", x_offset =  0, z_offset =  0, rotation = 0, animdata = {bank ="pisohamlet", build ="pisohamlet", anim="noise_woodfloor", background=true} },
+                { name = "housefloor", x_offset =  0, z_offset =  0, rotation = 0, }--animdata = {bank ="pisohamlet", build ="pisohamlet", anim="noise_woodfloor", background=true} },
             }
 
             interior_spawner:CreateRoom("generic_interior", 15, nil, 10, name..ID, ID, addprops, {}, walltexture, floortexture, minimaptexture, nil, colorcube, nil, true, "inside", "HOUSE","WOOD")
