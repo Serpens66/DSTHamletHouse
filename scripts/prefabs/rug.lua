@@ -31,14 +31,15 @@ local prefabs =
 
 local function smash(inst)
     if inst.components.lootdropper then
-		local interiorSpawner = GetWorld().components.interiorspawner 
-        if interiorSpawner.current_interior then
-            local originpt = interiorSpawner:getSpawnOrigin()
-            local x, y, z = inst.Transform:GetWorldPosition()
+        local x, y, z = inst.Transform:GetWorldPosition()
+        local interiorSpawner = TheWorld.components.interiorspawner 
+        local current_interior = interiorSpawner:GetInteriorByPos(Vector3(x,y,z))
+        if current_interior~=nil then
+            local originpt = interiorSpawner:getSpawnOrigin(current_interior)
             local dropdir = Vector3(originpt.x - x, 0.0, originpt.z - z):GetNormalized()
             inst.components.lootdropper.dropdir = dropdir
-	        inst.components.lootdropper:DropLoot()
-	    end
+        end
+        inst.components.lootdropper:DropLoot()
     end
     SpawnPrefab("collapse_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
     if inst.SoundEmitter then

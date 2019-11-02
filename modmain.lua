@@ -35,7 +35,9 @@ PrefabFiles = {
     "deco_ruins_fountain", -- needed?
     "deco_wall_ornament",
     "playerhouse_city_floor", -- test  
-    "invis_lightningrod",    
+    "invis_lightningrod",
+    "demolition_permit",
+    "construction_permit",
 }
 
 Assets = {
@@ -65,82 +67,51 @@ Assets = {
 }
 
 
--- [00:00:50]: WARNING! Could not find region 'wood_door.tex' from atlas '../mods/Slanty Shanty/images/inventoryimageshamlet.xml'. Is the region specified in the atlas?
--- [00:00:50]: Looking for default texture '' from atlas '../mods/Slanty Shanty/images/inventoryimageshamlet.xml'.
--- [00:00:50]: Error Looking for default texture in from atlas '../mods/Slanty Shanty/images/inventoryimageshamlet.xml'.
 
 
--- den namen "inventoryimageshamlet" wieder rausnehmen, da es wohl funktioniert, einfach inventoryimages zu nehmen.
+-- remove "inventoryimageshamlet" because it also works if we use "inventoryimages" as name
 
--- für cheater/wortox usw die sich iwie anders aus dem haus rausteleportieren ein ~alle 10 sek check machen, ob noch in der nähe des hauses. und wenn nicht, dann die HH_House(false)
--- fkt aufrufen.-- und vllt auch einfach die enter action aufrufen, wenn sie sich auf invalid ground aufhalten?
--- dabei auch den camera lock ausführen, denn diverse game mechaniken setzen diese zurück. hier darauf achten, dass die camera auch auf das zentrum des raumes zentriert wird.
--- und vllt noch checken, ob der player innerhalb der camera ist. falls nicht vllt doch wieder player folgen
+-- for cheaters/wortox and other teleporting we may need to add a periodictask eg every 5 seconds, to check if they teleported out of the house and update all functions 
+-- and camera accordingly...
 
 
--- blitze können im inneren einschlagen
+-- find out how to properly make things be shwon in front of others. Eg it can happen that the sehlf is shown behind the window after loading and other stuff.
+-- there is already a background priority, but I dont undertsand how it works
 
+-- make the house itself destroyable by demolishing pack
+-- make repairing a half destroyed house needing ressources before you can repair it with a hammer.
 
--- irgendwie muss ich noch rausfinden, wie man zuverlässig steuert, welches objekt worüber angezeigt wird. SetOrder ist ja iwie sinnfrei.
--- damit zb ein shelf/ornament auch nach dem laden noch vor dem fenster angezeigt wird (oder auch die säulen vor dem fenster)
+-- change order of the renovate recipes to display the most used at the top
 
+-- the shelf system is really complicated. Although I think every code is correct, it does not work properly, no clue why...
+-- if nothing helps, we have to switch back to old hamlet code, we can see it within tropical experience mod.
 
--- haus selbst mit dem demolishion pack zerstörbar machen, mitsamt raum, daher ein repezt vom dmeloishonpack auch ins tools craftmenu packen
--- optional nach halbzersörung dem haus erst x items geben müssen, bevor es mit hammer repariert werden kann.
--- action DEMOLISH_ROOM
+-- does decoration need/has the DECOR tag?
 
+-- in DS you can flip some decorations before placing. This mechanic does not exist in DST, so we would need to implement it... maybe
 
--- testen ob hunde/giants/antlion/lureplants/frograin in haus spawnen (bzw besser im code gucken)
+-- require prefabutil in prefab files is not needed, delete it.
 
--- rezepte für die default house inneneinrichtung (also die säulen) zufügen und evlt auch für andere objekte in anderen hamlet räumen (wobei das evlt auch Baku machen kann)
--- reihenfolge der rezepte ändern, zb shelfs braucht man nicht oft, kann daher nach unten
+-- things within the house get wet when it is raining. Take a look at my old home base bonus mod and how I manipulated wet there: https://steamcommunity.com/sharedfiles/filedetails/?id=738448215
 
+-- make the camera within house also work when loading/ressurecting/transforming with woodie and other stuff.. maybe with doperiodictask ?
 
--- das shelf system ist unnötig kompliziert...
--- ich lass den code erstmal so und geb ich dann vllt baku und er kann gucken ob ers fixen kann.
+-- cant extinguish the house?
+-- in DS the house can not completly burn as long a player is inside the first room (it burns down if player is in a connected room, so DS is also bad code)
+-- so we have to write ourself a function, that is checking if any player is inside any room of the house and use it for burn and also for complete destruction.
 
--- evtl DECOR Tag zu allen decos packen?
+-- my hamlet placers for decoration dont work well with the geometric placement mod. My code places the placer at the correct location, while geometric placement is putting 
+-- them back to the mouse. need to check if there is a fix at my side or change loading priority or fix has to be done by the author. 
 
--- manche decos kann man in DS drehen beim platzieren DoFlipFacing in playercontroller wenn der makeplacer flipable true gesetzt hat.
--- aktuelle tastenbelegung beißt sich aber mit camera drehen und erstmal nicht einbauen. vllt später.
--- ansonsten können solche flipable dinger evlt auch durch mein wallblockobject collidened gemacht werden, denn diese werden ja korrekt mitgedreht, weils faces dazu gibt.
--- allerdings wird placer zb vom oval rug (teppich) horizontal angezeigt und nachm bau ists horizontal... wenn also flipable nicht einbauen, dann zumindest dafür sorgen,
--- dass es genau so platziert wird, wie place es anzeigt.
+-- wallornament is activating smash for window if placed on it. -> change the smash trigger to only trigger if the same kind of decoration was placed (eg window on window)
 
--- housefloor blockt zwar keine structures mehr, aber das ablegen von items funzt an seinem mittelpunkt dennoch nicht...
+-- wall decoration blocks building structres next to it?!
 
--- require prefabutil wird nicht in prefabs benötigt, also rauslöschen
+-- test my interiorspawner and create hundres of interiors by code and see if they all work fine.
 
--- werden items usw im haus bei regen nass? jop...
+-- hardwood door has no image in renovate tab (it is copying a random other image)
 
-
--- camera tweak verbessern. Aktuell wird beim sterben+wiederbeleben und beim laden im haus die kamera vermurkst
--- (vermutlich mit doperiodictask)
-
--- die lightningrods noch durch ein neues prefab ersetzen, welches nur die blitze anzieht, aber kein leuchten, animation oder sound macht.
-
--- haus kann aktuell nicht gelöscht werden.
--- es brennt aktuell ab, auch wenn player drin ist (weil IsPlayerInside noch nicht gesetzt ist, bzw stattdessen noch ne fkt im interiorspawner einbauen)
--- derselbe check müsste noch fürs zerstören durch giants gemacht werden
-
--- fenster placer spinnt, platziert sich in milisekundenschnelle hier und dort und da?!
--- gilt auch für alle anderen placer.
--- passiert wenn man in dem bereich ist, bei dem der placer automatisch an die richtige stelle springen sollte.
--- dann springt der placer von der richtigen stelle zum mauszeiger und zurück. usw.
-
--- wallornament löst smash von fenster aus, wenn mittig platziert -> smahs sollte nur auslösen, wenns ein dekoobjekt derselben kategorie ist.
-
--- deco placer/objekte rufen noch getspawnorigin ohne interior auf.
-
--- frograin ist änlich beschissen gemacht, wie weather... ziemlich unmöglich dafür zu sorgen, dass ein spieler davon nicht mehr betroffen ist.
--- evlt doch nochmal über die listener oder über die playeR:dotaskintime oderso dranzukommen.
--- ansonsten für lighning rods spawnen und für frograin den wallobjects den tag "frog" geben.
--- bzw frograin könnte man mit SetSpawnTimes and ToggleUpdate komemn und darüber dann an _activeplayers
-
-
--- speer wall ornament blockt structure in der nähe zu bauen?
-
--- in den code der decos schauen und die items die beim zerstören gespwend werden entfernen. es reicht wenn man die hälfte der ksoten zurückgbekommt
+-- cant place any decoration without freecrafting() console-code active?! maybe it is related to my SCIENCE_ONE recipe requirement? try TECH_NONE instead..
 
 
 modimport("strings")
@@ -165,6 +136,10 @@ AddComponentPostInit("frograin",function(self)
     UpvalueHacker.SetUpvalue(self.SetSpawnTimes, new_SpawnFrogForPlayer, "SpawnFrogForPlayer")
 end)
 --]]
+
+-- ################
+-- disabled lightning fix (use lightningrods instead) and rain sound fix
+-- ################
 
 local _lightningtargets -- includes all active players. We will remove the players that are interior. instead we can also use lightningrods around the interiors. this might be the better effect (because with upvaluehacker there wont be any lightning/thunder while being interior)
 AddComponentPostInit("weather",function(self)
@@ -207,6 +182,9 @@ AddComponentPostInit("weather",function(self)
     UpvalueHacker.SetUpvalue(self.OnUpdate, new_StartUmbrellaRainSound, "StartUmbrellaRainSound")
 end)
 
+-- ################
+-- ################
+
 
 GLOBAL.GetInteriorSpawner = function()
     return GLOBAL.TheWorld.components.interiorspawner
@@ -236,7 +214,7 @@ AddGlobalClassPostConstruct("entityscript", "EntityScript", function(self)
     end
 end)
 
-TUNING.DECO_RUINS_BEAM_WORK = 6
+TUNING.DECO_RUINS_BEAM_WORK = 6 -- just for compatibility
 
 GLOBAL.MakeInteriorPhysics = function(inst, rad, height, width)
     height = height or 20
@@ -459,33 +437,14 @@ end)
 
 
 GLOBAL.MakePlacerHamlet = function(name, bank, build, anim, onground, snap, metersnap, scale, snap_to_flood, fixedcameraoffset, facing, hide_on_invalid, hide_on_ground, placeTestFn, modifyfn, preSetPrefabfn)
-    
-    
     -- currently we dont need hamlets "hide_on_invalid, hide_on_ground", "snap_to_flood", so I wont implement this
     -- postinit_fn==preSetPrefabfn is a postinit for the placer object, to add more info/functionality or initially rotate it
     
     -- onupdatetransform==placeTestFn is for live updates of the placer, eg rotate it depending on position. 
     -- placeTestFn of DS also tests if sth can be placed, so instead we will try to use the recipe testfn
-    -- problem ist, dass testfn den placer nicht kennt, dieser wird aber benötigt...
-    -- am BESTEN wäre es die fkt aufzuteilen.
-    -- den ganzen rotate kram usw halt bei onupdatetransform machen, wo wir den place mit übergeben können
-    -- und das true false canbuild dann als recipe testfn, wobei dieser Teil dann extrahiert und bei addrecipe als offizielle testfn übergeben werden muss
-    -- (dafür auch kleine anleitung für andere schreiben) aus der placeTestFn den teil der returned extrahieren, aber ohne inst, also ohne den placer, denn den haben wir in testfn nicht
-    -- 
-    -- stattdessen über addsiompostinit die rezepte durchgehen und testfn anpassen,
-    -- aber als eigene function in welcher dann ein unsichtbarern placer spawned welcher als dummy übergeben wird, damit letzlich nur das returnde wichtig ist
-    
-    
-    -- modifyfn is to change/transform the build object directly after it is build. currently there is no equivalent in DST
-    -- dafür sehe ich keine andere möglichkeit als DoBuild vom builder vollständig für die deko objekte zu ersetzen
-    
-    
-    
 
-    -- if placeTestFn~=nil then
-        -- hamlet_placers_with_special_functions[name] = {placeTestFn=placeTestFn}
-    -- end
-    
+    -- modifyfn is to change/transform the build object directly after it is build. currently there is no equivalent in DST
+    -- we will modify DoBuild to add this, I see no other way.
     local old_preSetPrefabfn = preSetPrefabfn
     local function new_preSetPrefabfn(placerinst,...)
         placerinst.placeTestFn = placeTestFn
@@ -515,7 +474,7 @@ GLOBAL.MakePlacerHamlet = function(name, bank, build, anim, onground, snap, mete
         local old_SetBuilder = placerinst.components.placer.SetBuilder
         local function new_SetBuilder(placer,builder, recipe, invobject,...)
             if placer.inst.ishamletplacer and placer.inst.placeTestFn~=nil and recipe~=nil then
-                local function new_recipe_testfn(pos,rot) -- there is no old_recipe_testfn, because hamlet does not have this feature
+                local function new_recipe_testfn(pos,rot) -- there is no old_recipe_testfn, because hamlet does not have this feature (so we dont need to save the old in this case)
                     local ret = placer.inst.placeTestFn(placer.inst,pos)
                     placer.targetPos = placer.inst:GetPosition() -- placeTestFn may have moved the placer away from the mouse, so when leftclik, use the positoin of the placer, not of the mouse
                     return ret
@@ -584,9 +543,7 @@ AddSimPostInit(function()
     GLOBAL.Map.IsPassableAtPointWithPlatformRadiusBias=function(self,x, y, z, allow_water, exclude_boats, platform_radius_bias, ignore_land_overhang,...)
         local oldresult = old_IsPassableAtPointWithPlatformRadiusBias(self,x, y, z, allow_water, exclude_boats, platform_radius_bias, ignore_land_overhang,...)
         if not oldresult then
-            -- local entities = GLOBAL.TheSim:FindEntities(x, 0, z, 15, {"HH_passableground"}) -- not that exact, a circle around the thing with this tag
-            -- if #entities>0 then
-            if GLOBAL.TheWorld.components.interiorspawner:GetInteriorByPos(GLOBAL.Vector3(x,y,z))~=nil then
+            if GLOBAL.TheWorld.components.interiorspawner:GetInteriorByPos(GLOBAL.Vector3(x,y,z))~=nil then -- this is exact
                 return true
             else
                 return oldresult
@@ -617,12 +574,12 @@ AddSimPostInit(function()
         end
     end
     
-    -- its likely that an AddPRefabPostInit to rain/pollen/snow with changing
+    -- its likely that an AddPrefabPostInit to rain/pollen/snow with changing
     -- _rainfx.particles_per_tick = 0
     -- _rainfx.splashes_per_tick = 0
     -- _snowfx.particles_per_tick = 0
     -- _pollenfx.particles_per_tick = 0
-    -- on every update or so, would also solve it.
+    -- on every update or so, would also solve it, instead of the code below
     GLOBAL.EmitterManager.old_updatefuncs = {snow=nil,rain=nil,pollen=nil}
     local old_PostUpdate = GLOBAL.EmitterManager.PostUpdate
     local function new_PostUpdate(self,...)
@@ -719,8 +676,9 @@ end)
 
 
 
-
+-- ############
 -- USEDOOR code
+-- ############
 
 local USEDOOR = AddAction("USEDOOR", "use_door", function(act)
 	if act.target:HasTag("secret_room") or act.target:HasTag("predoor") then
@@ -733,13 +691,7 @@ local USEDOOR = AddAction("USEDOOR", "use_door", function(act)
 		return false, "LOCKED"
 	end
 end)
-GLOBAL.STRINGS.ACTIONS.USEDOOR = "Enter" -- this one is used
-GLOBAL.STRINGS.ACTIONS.JUMPIN.ENTER = "EnterJumpin" -- is used from hamlet via getverb. maybe replace it in files with USEDOOR
--- USEDOOR.strfn = function(act)
-	-- if act.target.components.door.getverb then
-		-- return act.target.components.door.getverb(act.target, act.doer) -- always returns STRINGS.ACTIONS.JUMPIN.ENTER, so not really needed
-	-- end
--- end
+GLOBAL.STRINGS.ACTIONS.USEDOOR = "Enter"
 AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(USEDOOR, "usedoor"))
 AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(USEDOOR, "usedoor"))
 AddStategraphState("wilson",GLOBAL.State{
@@ -788,6 +740,259 @@ end)
 AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(GLOBAL.ACTIONS.RENOVATEHOUSE, "dolongaction"))
 AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(GLOBAL.ACTIONS.RENOVATEHOUSE, "dolongaction"))
 
+-- ####
+-- BUILD_ROOM DEMOLISH_ROOM code
+-- ####
+
+-- in DS: you can add doors to every single room, even if it is already an expansion (maybe limit it somehow in modsettings)
+-- if a room gets destroyed, all their structures are destroyed and the loot will spawn in the room the player currently is (I guess also the structures from all other rooms that were connected to the destroyed one)
+
+-- we need a check if in one of the rooms is currently a player (IsPlayerConsideredInside)
+-- in DS only one room is loaded at once, while in DST all are there and we dont use object_list anymore
+
+-- the code below is mostly a copy from DS, so not prepared for DST and my new interiorspawner.
+
+--[[
+AddAction("BUILD_ROOM", "BUILD_ROOM", function(act)
+    if act.invobject.components.roombuilder and act.target:HasTag("predoor") then
+		
+		local interior_spawner = GetInteriorSpawner()
+        local current_interior = interior_spawner:GetInteriorByPos(act.target:GetPosition())
+
+		local function CreateNewRoom(dir)
+			local name = current_interior.dungeon_name
+			local ID = interior_spawner:GetNewID()
+			ID = "p" .. ID -- Added the "p" so it doesn't trigger FixDoors on the InteriorSpawner
+
+            local floortexture = "levels/textures/noise_woodfloor.tex"
+            local walltexture = "levels/textures/interiors/shop_wall_woodwall.tex"
+            local minimaptexture = "levels/textures/map_interior/mini_ruins_slab.tex"
+            local colorcube = "images/colour_cubes/pigshop_interior_cc.tex"
+
+            local addprops = {
+                { name = "deco_roomglow", x_offset = 0, z_offset = 0 }, 
+
+                { name = "deco_antiquities_cornerbeam",  x_offset = -5, z_offset =  -15/2, rotation = 90, flip=true, addtags={"playercrafted"} },
+                { name = "deco_antiquities_cornerbeam",  x_offset = -5, z_offset =   15/2, rotation = 90,            addtags={"playercrafted"} },      
+                { name = "deco_antiquities_cornerbeam2", x_offset = 4.7, z_offset = -15/2, rotation = 90, flip=true, addtags={"playercrafted"} },
+                { name = "deco_antiquities_cornerbeam2", x_offset = 4.7, z_offset =  15/2, rotation = 90,            addtags={"playercrafted"} },  
+
+                { name = "swinging_light_rope_1", x_offset = -2, z_offset =  0, rotation = -90,                      addtags={"playercrafted"} },
+            }
+
+            local room_exits = {}
+			
+            local width = 15
+            local depth = 10
+
+			room_exits[player_interior_exit_dir_data[dir].opposing_exit_dir] = {
+				target_room = current_interior.unique_name,
+				bank =  "player_house_doors",
+				build = "player_house_doors",
+				room = ID,
+				prefab_name = act.target.prefab,
+				house_door = true,
+			}
+
+			-- Adds the player room def to the interior_spawner so we can find the adjacent rooms
+			interior_spawner:AddPlayerRoom(name, ID, current_interior.unique_name, dir)
+			
+			local doors_to_activate = {}
+			-- Finds all the rooms surrounding the newly built room
+			local surrounding_rooms = interior_spawner:GetSurroundingPlayerRooms(name, ID, player_interior_exit_dir_data[dir].op_dir)
+
+			if next(surrounding_rooms) ~= nil then
+				-- Goes through all the adjacent rooms, checks if they have a pre built door and adds them to doors_to_activate
+				for direction, room_id in pairs(surrounding_rooms) do
+					local found_room = interior_spawner:GetInteriorByName(room_id)
+
+					if found_room.visited then
+						for _, obj in pairs(found_room.object_list) do
+
+							local op_dir = player_interior_exit_dir_data[direction] and player_interior_exit_dir_data[direction].op_dir
+							if obj:HasTag("predoor") and obj.baseanimname and obj.baseanimname == op_dir then
+								room_exits[player_interior_exit_dir_data[op_dir].opposing_exit_dir] = {
+									target_room = found_room.unique_name,
+									bank =  "player_house_doors",
+									build = "player_house_doors",
+									room = ID,
+									prefab_name = obj.prefab,
+									house_door = true,
+								}
+
+								doors_to_activate[obj] = found_room
+							end
+						end
+					end
+				end
+			end
+
+			-- Actually creates the room
+            interior_spawner:CreateRoom("generic_interior", width, nil, depth, name, ID, addprops, room_exits, walltexture, floortexture, minimaptexture, nil, colorcube, nil, true, "inside", "HOUSE","WOOD")
+
+            -- Activates all the doors in the adjacent rooms
+            for door_to_activate, found_room in pairs(doors_to_activate) do
+            	print ("################## ACTIVATING FOUND DOOR")
+            	door_to_activate.ActivateSelf(door_to_activate, ID, found_room)
+            end
+
+            -- If there are already built doors in the same direction as the door being used to build, activate them
+            local pt = interior_spawner:getSpawnOrigin(current_interior)
+            local other_doors = TheSim:FindEntities(pt.x, pt.y, pt.z, 50, {"predoor"}, {"INTERIOR_LIMBO", "INLIMBO"})
+            for _, other_door in ipairs(other_doors) do
+            	if other_door ~= act.target and other_door.baseanimname and other_door.baseanimname == act.target.baseanimname then
+            		print ("############### ACTIVATING DOOR")
+            		other_door.ActivateSelf(other_door, ID, current_interior)
+            	end
+            end
+
+			act.target.components.door:checkDisableDoor(false, "house_prop")
+			
+	        local door_def =
+	        {
+	        	my_interior_name = current_interior.unique_name,
+	        	my_door_id = current_interior.unique_name .. player_interior_exit_dir_data[dir].my_door_id_dir,
+	        	target_interior = ID,
+	        	target_door_id = ID .. player_interior_exit_dir_data[dir].target_door_id_dir
+	    	}
+
+	        interior_spawner:AddDoor(act.target, door_def)
+	        act.target.InitHouseDoor(act.target, dir)
+        end
+
+		local dir = GetInteriorSpawner():GetExitDirection(act.target)
+        CreateNewRoom(dir)
+
+        act.target:AddTag("interior_door")
+		act.target:RemoveTag("predoor")
+		act.invobject:Remove()
+		return true
+	end
+
+	return false
+end
+
+
+AddAction("DEMOLISH_ROOM", "DEMOLISH_ROOM", function(act)
+	if act.invobject.components.roomdemolisher and act.target:HasTag("house_door") and act.target:HasTag("interior_door") then
+		local interior_spawner = GetInteriorSpawner()
+		local target_interior = interior_spawner:GetInteriorByName(act.target.components.door.target_interior)
+		local index_x, index_y = interior_spawner:GetPlayerRoomIndex(target_interior.dungeon_name, target_interior.unique_name)
+		
+		if act.target.doorcanberemoved and act.target.roomcanberemoved and not (index_x == 0 and index_y == 0) then
+			local total_loot = {}
+
+			if target_interior.visited then
+				
+                -- local instances_inroom = interior_spawner:Get  -- find somehow all instances with the room, FindEntities is not exact enough (because of circle radius)... maybe we have to save them as soon as sth new enters a room? hm...
+                
+                for _, object in pairs(target_interior.object_list) do -- doees not exist in my new interiorspawner script for good reason
+				 	if object.components.inventoryitem then
+				 		
+				 		object:ReturnToScene()
+				 		object.components.inventoryitem:ClearOwner()
+					    object.components.inventoryitem:WakeLivingItem()
+					    object:RemoveTag("INTERIOR_LIMBO")
+
+				 		table.insert(total_loot, object)
+
+				 	else
+					 	if object.components.container then
+					 		local container_objs = object.components.container:RemoveAllItems()
+					 		for i,obj in ipairs(container_objs) do
+					 			table.insert(total_loot, obj)
+					 		end
+					 	end
+
+					 	if object.components.lootdropper then
+					 		local smash_loot = object.components.lootdropper:GenerateLoot()
+					 		for i,obj in ipairs(smash_loot) do
+					 			table.insert(total_loot, SpawnPrefab(obj))
+					 		end
+					 	end
+				 	end
+				end
+
+				-- Removes the found loot from the interior so it doesn't get deleted by the next for
+				for _, loot in ipairs(total_loot) do
+					print ("Removing ", loot.prefab)
+					interior_spawner:removeprefab(loot, target_interior.unique_name)
+				end
+
+				-- Deletes all of the interior with a reverse for
+				local obj_count = #target_interior.object_list
+				for i = obj_count, 1, -1 do
+
+					local current_obj = target_interior.object_list[i]
+					if current_obj and current_obj.prefab ~= "generic_wall_back" and current_obj.prefab ~= "generic_wall_side" then
+						
+						if current_obj:HasTag("house_door") then
+							local connected_door = interior_spawner:GetDoorInst(current_obj.components.door.target_door_id)
+							if connected_door and connected_door ~= act.target then
+								connected_door.DeactivateSelf(connected_door)
+							end
+						end
+
+						current_obj:Remove()
+					end
+				end
+			else
+				table.insert(total_loot, SpawnPrefab("oinc"))
+				if act.target.components.lootdropper then
+					local smash_loot = act.target.components.lootdropper:GenerateLoot()
+					for i,obj in ipairs(smash_loot) do
+			 			table.insert(total_loot, SpawnPrefab(obj))
+			 		end
+				end
+			end
+
+			for _, loot in ipairs(total_loot) do
+				local pos = Vector3(act.target.Transform:GetWorldPosition())
+				loot.Transform:SetPosition(pos:Get())
+				if loot.components.inventoryitem then
+					loot.components.inventoryitem:OnDropped(true)
+				end
+			end
+
+			act.target:DeactivateSelf(act.target)
+			interior_spawner:RemoveInterior(target_interior.unique_name)
+			interior_spawner:RemovePlayerRoom(target_interior.dungeon_name, target_interior.unique_name)
+
+			SpawnPrefab("collapse_small").Transform:SetPosition(act.target.Transform:GetWorldPosition())
+		    if act.target.SoundEmitter then
+		        act.target.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
+		    end
+
+			TheWorld:PushEvent("roomremoved")
+			act.invobject:Remove()
+
+		elseif act.doer~=nil then
+			act.doer.components.talker:Say(GetString(act.doer.prefab, "ANNOUNCE_ROOM_STUCK"))
+		end
+
+		return true
+	end
+end)
+GLOBAL.STRINGS.ACTIONS.BUILD_ROOM = "BUILD_ROOM"
+GLOBAL.STRINGS.ACTIONS.DEMOLISH_ROOM = "DEMOLISH_ROOM"
+
+AddComponentAction("USEITEM", "roombuilder", function(inst, doer, target, actions)
+    if target:HasTag("predoor") then
+        table.insert(actions, ACTIONS.BUILD_ROOM)
+    end
+end)
+AddComponentAction("USEITEM", "roombuilder", function(inst, doer, target, actions)
+    if target:HasTag("interior_door") and target:HasTag("house_door") then
+        table.insert(actions, ACTIONS.DEMOLISH_ROOM)
+    end
+end)
+
+AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(GLOBAL.ACTIONS.BUILD_ROOM, "doshortaction"))
+AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(GLOBAL.ACTIONS.BUILD_ROOM, "doshortaction"))
+AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(GLOBAL.ACTIONS.DEMOLISH_ROOM, "doshortaction"))
+AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(GLOBAL.ACTIONS.DEMOLISH_ROOM, "doshortaction"))
+--]]
+
 -- ########################################################################################################
 -- #### shelfer
 -- ########################################################################################################
@@ -804,21 +1009,21 @@ modimport("scripts/camera_tweak")
 
 
 
-local function housecanburn(inst)
-    -- local interior_spawner = GetWorld().components.interiorspawner
-	-- if inst.components.door then
-		-- local interior = inst.components.door.target_interior
-		-- if interior_spawner:IsPlayerConsideredInside(interior) then
-			-- return false, 2 + math.random() * 3 -- try again in 2-5 seconds
-		-- end
-	-- end
-    if inst.IsPlayerInside then
-        return false, 2 + math.random() * 3 -- try again in 2-5 seconds
-    end
+local function housecanburn(inst) -- the house will not burn, as long as a player is inside
+    local interior_spawner = TheWorld.components.interiorspawner
+	if inst.components.door then
+		local interior = inst.components.door.target_interior
+		if interior_spawner:IsPlayerConsideredInside(interior) then
+			return false, 2 + math.random() * 3 -- try again in 2-5 seconds
+		end
+	end
+    -- if inst.IsPlayerInside then -- this does not exist yet, it is just a placeholder
+        -- return false, 2 + math.random() * 3 -- try again in 2-5 seconds
+    -- end
 	return true
 end
 
-AddPrefabPostInit("playerhouse_city",function(inst)
+AddPrefabPostInit("playerhouse_city",function(inst) -- the house will not burn, as long as a player is inside
     local comp = inst.components.burnable
     if comp~=nil then
         function comp:SetCanActuallyBurnFunction(fn)
@@ -856,7 +1061,6 @@ end)
 AddPrefabPostInit("forest", function(inst)
   if GLOBAL.TheWorld.ismastersim then 
     inst:AddComponent("interiorspawner")
-    -- inst:AddComponent("contador")
   end
 end)
 
@@ -869,49 +1073,14 @@ if GLOBAL.CUSTOM_RECIPETABS.RenovateTab then
 else
 	RenovateTab = AddRecipeTab("RenovateTab", 999, "images/renovatetab.xml", "renovatetab.tex", nil,true)
 end  
-AddRecipe("axe renovate", { Ingredient("cutgrass", 1), }, RenovateTab, GLOBAL.TECH.SCIENCE_ONE,nil, nil, true, nil, nil,nil,nil,nil,"axe")
+-- AddRecipe("axe renovate", { Ingredient("cutgrass", 1), }, RenovateTab, GLOBAL.TECH.SCIENCE_ONE,nil, nil, true, nil, nil,nil,nil,nil,"axe")
 local recipehouse = AddRecipe("playerhouse_city", {}, GLOBAL.RECIPETABS.TOWN, GLOBAL.TECH.NONE,"playerhouse_city_placer")--, cityRecipeGameTypes, "playerhouse_city_placer", nil, true)
 recipehouse.sortkey = _G.AllRecipes["pighouse"]["sortkey"] + 0.1
 recipehouse.atlas = "images/playerhouse.xml"    
 recipehouse.image = "playerhouse.tex"
 modimport("scripts/decorecipes")
 
-STRINGS.NAMES.PLAYERHOUSE_CITY_ENTRANCE = "Slanty Shanty" --название
-GLOBAL.STRINGS.RECIPE_DESC.PLAYERHOUSE_CITY_ENTRANCE = "Home sweet home."--описание
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.PLAYERHOUSE_CITY_ENTRANCE = "Home sweet home."
-STRINGS.CHARACTERS.WILLOW.DESCRIBE.PLAYERHOUSE_CITY_ENTRANCE = "I wonder how long before it burns down."
-STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.PLAYERHOUSE_CITY_ENTRANCE = "Is mighty Wolfgang house!"
-STRINGS.CHARACTERS.WENDY.DESCRIBE.PLAYERHOUSE_CITY_ENTRANCE = "Why bother with a permanent home"
-STRINGS.CHARACTERS.WX78.DESCRIBE.PLAYERHOUSE_CITY_ENTRANCE = "I HAVE ACQUIRED HOME PAGE"
-STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.PLAYERHOUSE_CITY_ENTRANCE = "A place to put my library."
-STRINGS.CHARACTERS.WOODIE.DESCRIBE.PLAYERHOUSE_CITY_ENTRANCE = "Time to start choppin' wood for the fireplace."
-STRINGS.CHARACTERS.WAXWELL.DESCRIBE.PLAYERHOUSE_CITY_ENTRANCE = "An estate of my own."
-STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.PLAYERHOUSE_CITY_ENTRANCE = "A place tö lay önes spear."
-STRINGS.CHARACTERS.WEBBER.DESCRIBE.PLAYERHOUSE_CITY_ENTRANCE = "Wow. Our own home!"
-STRINGS.CHARACTERS.WINONA.DESCRIBE.PLAYERHOUSE_CITY_ENTRANCE =  "Anything, just to not work"
-STRINGS.CHARACTERS.WORTOX.DESCRIBE.PLAYERHOUSE_CITY_ENTRANCE = "Let's fun!"
-STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.PLAYERHOUSE_CITY_ENTRANCE = "Home"
-STRINGS.CHARACTERS.WARLY.DESCRIBE.PLAYERHOUSE_CITY_ENTRANCE =  "A sweet maison."
 
-STRINGS.NAMES.PLAYERHOUSE_CITY = "Slanty Shanty" --название
-GLOBAL.STRINGS.RECIPE_DESC.PLAYERHOUSE_CITY = "Home sweet home."--описание
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.PLAYERHOUSE_CITY = "Home sweet home."
-STRINGS.CHARACTERS.WILLOW.DESCRIBE.PLAYERHOUSE_CITY = "I wonder how long before it burns down."
-STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.PLAYERHOUSE_CITY = "Is mighty Wolfgang house!"
-STRINGS.CHARACTERS.WENDY.DESCRIBE.PLAYERHOUSE_CITY = "Why bother with a permanent home"
-STRINGS.CHARACTERS.WX78.DESCRIBE.PLAYERHOUSE_CITY = "I HAVE ACQUIRED HOME PAGE"
-STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.PLAYERHOUSE_CITY = "A place to put my library."
-STRINGS.CHARACTERS.WOODIE.DESCRIBE.PLAYERHOUSE_CITY = "Time to start choppin' wood for the fireplace."
-STRINGS.CHARACTERS.WAXWELL.DESCRIBE.PLAYERHOUSE_CITY = "An estate of my own."
-STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.PLAYERHOUSE_CITY = "A place tö lay önes spear."
-STRINGS.CHARACTERS.WEBBER.DESCRIBE.PLAYERHOUSE_CITY = "Wow. Our own home!"
-STRINGS.CHARACTERS.WINONA.DESCRIBE.PLAYERHOUSE_CITY =  "Anything, just to not work"
-STRINGS.CHARACTERS.WORTOX.DESCRIBE.PLAYERHOUSE_CITY = "Let's fun!"
-STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.PLAYERHOUSE_CITY = "Home"
-STRINGS.CHARACTERS.WARLY.DESCRIBE.PLAYERHOUSE_CITY =  "A sweet maison."
-
-
-STRINGS.NAMES.PLAYERHOUSE_CITY_DOOR_SAIDA = "Door" --название
 
 -- nothing from the new renovate tab is called by this function!??!?!
 -- AddComponentPostInit("builder",function(self) -- for server
