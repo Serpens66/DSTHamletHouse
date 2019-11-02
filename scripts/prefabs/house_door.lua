@@ -424,8 +424,8 @@ local function common_house_door_fn()
 
    	local function CheckForRemoval()
    		inst:DoTaskInTime(0, function() 
-   			inst.doorcanberemoved = GetInteriorSpawner():GetCurrentPlayerRoomConnectedToExit(inst.components.door.interior_name,inst.baseanimname,nil,inst)
-            inst.roomcanberemoved = GetInteriorSpawner():GetCurrentPlayerRoomConnectedToExit(inst.components.door.interior_name,inst.baseanimname, inst.components.door.target_interior,inst)
+   			inst.doorcanberemoved = GetInteriorSpawner():GetCurrentPlayerRoomConnectedToExit(inst.components.door.interior_name,inst.baseanimname)
+            inst.roomcanberemoved = GetInteriorSpawner():GetCurrentPlayerRoomConnectedToExit(inst.components.door.interior_name,inst.baseanimname, inst.components.door.target_interior)
    		end)
    	end
 
@@ -484,7 +484,7 @@ local function common_house_door_fn()
     end
 
     inst:AddComponent("inspectable")
-    inst.components.inspectable.descriptionfn = function(inst,viewer) return GetString(viewer.prefab, "ANNOUNCE_HOUSE_DOOR") end
+    inst.components.inspectable:SetDescription(function() return GetString(GetPlayer().prefab, "ANNOUNCE_HOUSE_DOOR") end)
 
     inst:AddComponent("door")
     inst.components.door:checkDisableDoor(true, "house_prop")
@@ -493,14 +493,14 @@ local function common_house_door_fn()
 
     inst:AddComponent("workable")
     inst.components.workable.canbeworkedbyfn = function(worker, numworks)
-    	return worker == ThePlayer
+    	return worker == GetPlayer()
    	end
    	
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
     inst.components.workable:SetWorkLeft(1)
     inst.components.workable:SetOnWorkCallback(
         function(inst, worker, workleft)
-            if workleft <= 0 and worker == ThePlayer then
+            if workleft <= 0 and worker == GetPlayer() then
 
             	print ("WORKER IS ", worker)
 
@@ -528,9 +528,9 @@ local function place_door_test_fn(inst, pt)
     
     local interior_spawner = TheWorld.components.interiorspawner
     local current_interior = interior_spawner:GetInteriorByPos(pt)
-    if current_interior~=nil then
+    if current_interior then
 
-        local originpt = interior_spawner:getSpawnOrigin(current_interior)
+        local originpt = interior_spawner:getSpawnOrigin()
         local width = current_interior.width
         local depth = current_interior.depth
 
@@ -573,7 +573,7 @@ local function place_door_test_fn(inst, pt)
         inst.Transform:SetRotation(rot)
 
         
-        local index_x, index_y = interior_spawner:GetCurrentPlayerRoomIndex(current_interior)
+        local index_x, index_y = interior_spawner:GetCurrentPlayerRoomIndex()
         if backdiff and not rightdiff and not leftdiff and index_x == 0 and index_y == -1 then
         	return false
         end
@@ -603,7 +603,7 @@ local function modify_house_door(inst)
     local interior_spawner = GetInteriorSpawner()
     local current_interior = interior_spawner:GetInteriorByPos(inst:GetPosition())
 
-    local originpt = interior_spawner:getSpawnOrigin(current_interior)
+    local originpt = interior_spawner:getSpawnOrigin()
     local width = current_interior.width
     local depth = current_interior.depth
 
