@@ -59,7 +59,7 @@ local function setScale(inst)
 end
 
 local function createmarkers(inst, pts)
-    print("crearemarker")
+    -- print("createmarker")
     for i, subpt in ipairs(pts) do   
 
         local marker = SpawnPrefab(inst.prefab)
@@ -246,7 +246,7 @@ local function placeTestWallFn(inst, pt, distance)
             newpt = pt
             canbuild = false
         end
-        print(rot)
+        -- print(rot)
         inst.Transform:SetPosition(newpt.x, newpt.y, newpt.z)
         inst.AnimState:PlayAnimation( inst.animdata.anim )
         inst.AnimState:SetBank(inst.animdata.bank .. side)

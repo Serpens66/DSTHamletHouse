@@ -913,6 +913,8 @@ function InteriorSpawner:SpawnInterior(interior,pt)
                 interior.wallobject = object
             elseif prefab.name == "housefloor" then
                 interior.floorobject = object
+            else
+                table.insert(interior.inst_list,object) -- a list that contains all instances within this room (that should be removed if the room is removed) EXCEPT floor and wall object
             end
             
             if prefab.flip then -- flips the art of the item. This must be manually saved on items it it's to persist over a save
@@ -1022,7 +1024,7 @@ function InteriorSpawner:SpawnInterior(interior,pt)
                 end
             end
             
-            table.insert(interior.inst_list,object) -- a list that contains all instances within this room (that should be removed if the room is removed)
+            
         else
             print("InteriorSpawner: SpawnInteriror: failed to spawn ",prefab.name)
         end
@@ -1360,8 +1362,10 @@ function InteriorSpawner:OnSave()
         local inst_list = {}
         for k, object in ipairs(room.inst_list) do
             local save_data = object.GUID
-            table.insert(inst_list, save_data)
-            table.insert(refs, object.GUID)
+            if save_data~=nil and not table.contains(refs,save_data) then
+                table.insert(inst_list, save_data)
+                table.insert(refs, save_data)
+            end
         end
 
         local interior_data =
@@ -1505,13 +1509,13 @@ function InteriorSpawner:LoadPostPass(ents, data)
     for k, room in pairs(data.interiors) do
         local interior = self:GetInteriorByName(room.unique_name)
         if interior then 
-            for i, object in pairs(room.inst_list) do
-                if object and ents[object] then                                     
-                    local object_inst = ents[object].entity
+            for i, objectGUID in pairs(room.inst_list) do
+                if objectGUID and ents[objectGUID] then                                     
+                    local object_inst = ents[objectGUID].entity
                     table.insert(interior.inst_list, object_inst) 
                     object_inst.interior = room.unique_name
                 else
-                    print("*** Warning *** InteriorSpawner:LoadPostPass object "..tostring(object).." not found for interior "..interior.unique_name)
+                    print("*** Warning *** InteriorSpawner:LoadPostPass objectGUID "..tostring(objectGUID).." not found for interior "..interior.unique_name)
                 end
             end
         else
