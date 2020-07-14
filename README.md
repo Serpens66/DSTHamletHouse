@@ -1,4 +1,6 @@
 # DSTHamletHouse
+Not worked on currently! may take some years...
+
 Fork of version 1.02 from Baku https://steamcommunity.com/sharedfiles/filedetails/?id=1882705336
 
 WIP
